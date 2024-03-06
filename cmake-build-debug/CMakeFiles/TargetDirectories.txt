@@ -1,0 +1,3 @@
+/home/maciejgrzybacz/CLionProjects/SysOpy/cmake-build-debug/CMakeFiles/SysOpy.dir
+/home/maciejgrzybacz/CLionProjects/SysOpy/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/maciejgrzybacz/CLionProjects/SysOpy/cmake-build-debug/CMakeFiles/rebuild_cache.dir
