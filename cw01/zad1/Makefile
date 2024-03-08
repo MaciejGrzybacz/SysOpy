@@ -1,79 +1,22 @@
-##Static library
-#CC=gcc
-#CFLAGS=-g -Wall
-#OBJECTS=main.o collatz.o
-#EXECUTABLE=prog
-#TARGET=prog
-#LIBRARY=libcollatz.a
-#
-#$(TARGET) : $(OBJECTS) $(LIBRARY)
-#	$(CC) $(CFLAGS) $(OBJECTS) -L. -lcollatz -o $(TARGET)
-#
-#$(LIBRARY): collatz.o
-#	ar rcs $(LIBRARY) collatz.o
-#
-#main.o: main.c collatz.h
-#	$(CC) $(CFLAGS) -c main.c
-#
-#collatz.o: collatz.h collatz.c
-#	$(CC) $(CFLAGS) -c collatz.c
-#
-#.PHONY : clean
-#
-#clean:
-#	@rm -f $(TARGET) $(OBJECTS) $(LIBRARY) core
+CC = gcc
+CFLAGS = -Wall
+LDFLAGS= -Lcollatz_library collatz
+LIB_DIR = collatz_library
 
-#Shared library
-#CC=gcc
-#CFLAGS=-g -Wall
-#OBJECTS=main.o collatz.o
-#EXECUTABLE=prog
-#TARGET=prog
-#LIBRARY=libcollatz.so
-#
-#$(TARGET) : $(OBJECTS) $(LIBRARY)
-#	$(CC) $(CFLAGS) $(OBJECTS) -L. -lcollatz -o $(TARGET)
-#
-#$(LIBRARY): collatz.o
-#	$(CC) -shared -o $(LIBRARY) collatz.o
-#
-#main.o: main.c collatz.h
-#	$(CC) $(CFLAGS) -c main.c
-#
-#collatz.o: collatz.h collatz.c
-#	$(CC) $(CFLAGS) -fPIC -c collatz.c
-#
-#.PHONY : clean
-#
-#clean:
-#	@rm -f $(TARGET) $(OBJECTS) $(LIBRARY) test.o core
-#
+all : static_agent shared_agent dl_agent
 
-# Both static and dynamic linking
-CC=gcc
-CFLAGS=-g -Wall
-OBJECTS=main.o collatz.o
-EXECUTABLE=prog
-TARGET=prog
-STATIC_LIBRARY=libcollatz.a
-SHARED_LIBRARY=libcollatz.so
+static_agent : static_agent.c
+	make -C collatz_library
+	$(CC) static_agent.c -o static_agent -L$(LIB_DIR) -l:collatz.a -lm
 
-$(TARGET) : $(OBJECTS) $(STATIC_LIBRARY) $(SHARED_LIBRARY)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET) -L. -lcollatz
+shared_agent : shared_agent.c
+	make -C collatz_library
+	$(CC) $(CDFLAGS) -L ./collatz_library shared_agent.c ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_agent -lm
 
-$(STATIC_LIBRARY): collatz.o
-	ar rcs $(STATIC_LIBRARY) collatz.o
+dl_agent : dl_agent.c
+	make -C collatz_library
+	$(CC) $(CFLAGS) -o dl_agent dl_agent.c -ldl
 
-$(SHARED_LIBRARY): collatz.o
-	$(CC) -shared -o $(SHARED_LIBRARY) collatz.o
-
-main.o: main.c collatz.h
-	$(CC) $(CFLAGS) -c main.c
-
-collatz.o: collatz.h collatz.c
-	$(CC) $(CFLAGS) -fPIC -c collatz.c
-
-.PHONY : clean
-
-clean:
-	rm -f $(TARGET) $(OBJECTS) $(STATIC_LIBRARY) $(SHARED_LIBRARY) core
+clean :
+	rm -f static_agent shared_agent dl_agent *.o
+	make -C collatz_library clean
