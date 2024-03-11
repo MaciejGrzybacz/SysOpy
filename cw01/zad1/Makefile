@@ -3,33 +3,47 @@ CFLAGS = -Wall -O0
 LDFLAGS= -Lcollatz_library collatz
 LIB_DIR = collatz_library
 
-# Compile all targets: static_agent, shared_agent, dl_agent
-all : static_agent shared_agent dl_agent
+all : static_client shared_client dynamic_client
 
-# Build static_agent executable
-static_agent : static_agent.c
-	# Enter collatz_library directory and make (compile) its contents
+# Build static_client executable
+static_client : client.c
+	# Enter collatz_library directory and make its contents
 	make -C collatz_library
-    # Compile static_agent.c and link with static library collatz.a
-	$(CC) static_agent.c -o static_agent -L$(LIB_DIR) -l:collatz.a -lm
+    # Compile client.c and link with static library collatz.a
+	$(CC) client.c -o static_client -L$(LIB_DIR) -l:collatz.a -lm
 
-# Build shared_agent executable
-shared_agent : shared_agent.c
-	# Enter collatz_library directory and make (compile) its contents
+# Build shared_client executable
+shared_client : client.c
+	# Enter collatz_library directory and make its contents
 	make -C collatz_library
-    # Compile shared_agent.c and link with shared library collatz.so
-	$(CC) $(CDFLAGS) -L ./collatz_library shared_agent.c ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_agent -lm
+    # Compile shared_client.c and link with shared library collatz.so
+	$(CC) $(CDFLAGS) -L ./collatz_library client.c ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_client -lm
 
-# Build dl_agent executable (for loading dynamic library at runtime)
-dl_agent : dl_agent.c
-    # Enter collatz_library directory and make (compile) its contents
+# Build dynamic_client executable (for loading dynamic library at runtime)
+dynamic_client : client.c
+    # Enter collatz_library directory and make its contents
 	make -C collatz_library
-    # Compile dl_agent.c with USE_DYNAMIC_LIBRARY flag to indicate dynamic library usage, and link with dl library
-	$(CC) $(CFLAGS) -DUSE_DYNAMIC_LIBRARY -o dl_agent dl_agent.c -ldl
+    # Compile dynamic_client.c with USE_DYNAMIC_LIBRARY flag to indicate dynamic library usage, and link with dl library
+	$(CC) $(CFLAGS) -o dynamic_client client.c -ldl -DUSE_DYNAMIC_LIBRARY
+
+# Run all executables
+test:
+	./static_client
+	./shared_client
+	./dynamic_client
+
+# Generate object dump of all executables
+objdump:
+	objdump -d static_client > static_client.objdump
+	objdump -d shared_client > shared_client.objdump
+	objdump -d dynamic_client > dynamic_client.objdump
+	cat static_client.objdump
+	cat shared_client.objdump
+	cat dynamic_client.objdump
 
 # Clean up generated files and directories
 clean :
     # Remove executables and object files
-	rm -f static_agent shared_agent dl_agent *.o *.asm
+	rm -f static_client shared_client dynamic_client *.o *.objdump
     # Clean collatz_library directory
 	make -C collatz_library clean
