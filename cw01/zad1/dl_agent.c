@@ -4,8 +4,6 @@
 
 #include <stdio.h>
 #include <dlfcn.h>
-#include <string.h>
-#include <stdlib.h>
 
 int main() {
     char path[] = "collatz_library/collatz.so";
@@ -31,6 +29,7 @@ int main() {
     }
 
     int max_iter = 10;
+#ifdef USE_DYNAMIC_LIBRARY
     for (int i = 0; i < 10; i++) {
         int collatz_convergence = test_collatz_convergence(i, max_iter);
         if (collatz_convergence >= 0)
@@ -38,5 +37,9 @@ int main() {
         else
             printf("Collatz conjecture for %d is unreachable after %d operations.\n", i, max_iter);
     }
+#else
+    printf("USE_DYNAMIC_LIBRARY is not defined. Please define it to use dynamic library.\n");
+#endif
+
     return 0;
 }
