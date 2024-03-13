@@ -3,15 +3,10 @@
 //
 
 #include <stdio.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include<sys/types.h>
 #include<sys/stat.h>
 #include <dirent.h>
-#include <stdio.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <string.h>
+
 
 int show_files_and_sizes(const char *path) {
     DIR *dir = opendir(path);

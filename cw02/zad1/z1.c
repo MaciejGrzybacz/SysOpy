@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include<sys/types.h>
-#include<sys/stat.h>
 
 int byte_after_byte(const char *rfile, const char *wfile) {
     FILE* rf = fopen(rfile,"rb");
@@ -53,7 +51,7 @@ int block_after_block(const char *rfile, const char *wfile) {
     int block_size = 1024;
     char buffer[block_size];
 
-    // Obracanie bloków danych
+
     for (int i = 1; i <= size / block_size; i++) {
         fseek(rf, -i * block_size, SEEK_END);
         fread(buffer, 1, block_size, rf);
@@ -65,10 +63,10 @@ int block_after_block(const char *rfile, const char *wfile) {
         fwrite(buffer, 1, block_size, wf);
     }
 
-    // Obracanie pozostałych danych (jeśli istnieją)
+
     int remaining_size = size % block_size;
     if (remaining_size > 0) {
-        fseek(rf, -size, SEEK_END); // Przesunięcie na początek pliku
+        fseek(rf, -size, SEEK_END);
         fread(buffer, 1, remaining_size, rf);
         for (int j = 0; j < remaining_size / 2; j++) {
             char c = buffer[j];
@@ -85,14 +83,14 @@ int block_after_block(const char *rfile, const char *wfile) {
 }
 
 int main() {
-    if(byte_after_byte("large_file.txt", "bytefile.txt")==0) {
+    if(byte_after_byte("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/little_file.txt", "bytefile.txt")==0) {
         printf("byte_after_byte: Success\n");
     }
     else {
         printf("byte_after_byte: Error\n");
         return 1;
     }
-    if(block_after_block("large_file.txt", "blockfile.txt")==0) {
+    if(block_after_block("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/large_file.txt", "blockfile.txt")==0) {
         printf("block_after_block: Success\n");
     }
     else {
