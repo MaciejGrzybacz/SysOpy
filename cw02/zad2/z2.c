@@ -7,7 +7,6 @@
 #include<sys/stat.h>
 #include <dirent.h>
 
-
 int show_files_and_sizes(const char *path) {
     DIR *dir = opendir(path);
     struct dirent *entry;
@@ -40,6 +39,6 @@ int show_files_and_sizes(const char *path) {
 }
 
 int main() {
-    show_files_and_sizes("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/zad1");
+    show_files_and_sizes("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/zad2");
     return 0;
 }

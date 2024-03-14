@@ -1,16 +1,22 @@
 //
 // Created by maciejgrzybacz on 11.03.24.
 //
-#ifndef USE_DYNAMIC_LIBRARY
-#include "collatz_library/collatz.h"
-#else
-#include <dlfcn.h>
+//#ifndef USE_DYNAMIC_LIBRARY
+//#include "collatz_library/collatz.h"
+//#else
+//#include <dlfcn.h>
+//#endif
 
-int (*collatz_conjecture)(int input);
-int (*test_collatz_convergence)(int input, int max_iter);
+#ifdef USE_DYNAMIC_LIBRARY
+#include<dlfcn.h>
 #endif
 
 #include <stdio.h>
+
+#ifndef USE_DYNAMIC_LIBRARY
+int collatz_conjecture(int input);
+int test_collatz_convergence(int input, int max_iter);
+#endif
 
 int main() {
 #ifdef USE_DYNAMIC_LIBRARY
@@ -20,6 +26,9 @@ int main() {
         printf("Cannnot load a libary placed in %s", path);
         return 1;
     }
+
+    int (*collatz_conjecture)(int input);
+    int (*test_collatz_convergence)(int input, int max_iter);
 
     collatz_conjecture = dlsym(handle, "collatz_conjecture");
     test_collatz_convergence = dlsym(handle, "test_collatz_convergence");

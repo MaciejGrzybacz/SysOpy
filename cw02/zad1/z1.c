@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <time.h>
 
 int byte_after_byte(const char *rfile, const char *wfile) {
-    FILE* rf = fopen(rfile,"rb");
+    FILE* rf = fopen(rfile,"r");
     FILE* wf = fopen(wfile, "w");
 
     if(rf == NULL || wf == NULL) {
@@ -34,8 +35,6 @@ int byte_after_byte(const char *rfile, const char *wfile) {
     return 0;
 }
 
-#include <stdio.h>
-
 int block_after_block(const char *rfile, const char *wfile) {
     FILE* rf = fopen(rfile, "rb");
     FILE* wf = fopen(wfile, "wb");
@@ -50,7 +49,6 @@ int block_after_block(const char *rfile, const char *wfile) {
 
     int block_size = 1024;
     char buffer[block_size];
-
 
     for (int i = 1; i <= size / block_size; i++) {
         fseek(rf, -i * block_size, SEEK_END);
@@ -83,13 +81,24 @@ int block_after_block(const char *rfile, const char *wfile) {
 }
 
 int main() {
-    if(byte_after_byte("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/little_file.txt", "bytefile.txt")==0) {
+    clock_t start_time, end_time;
+    double cpu_time_used;
+    start_time = clock();
+    FILE* file = fopen("pomiar_zad_2.txt","w");
+
+    if(byte_after_byte("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/large_file.txt", "bytefile.txt")==0) {
         printf("byte_after_byte: Success\n");
     }
     else {
         printf("byte_after_byte: Error\n");
         return 1;
     }
+    end_time=clock();
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    fprintf(file, "Time needed to reverse a file byte after byte was: %f s.\n", cpu_time_used);
+
+
+    start_time=clock();
     if(block_after_block("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/large_file.txt", "blockfile.txt")==0) {
         printf("block_after_block: Success\n");
     }
@@ -97,5 +106,9 @@ int main() {
         printf("block_after_block: Error\n");
         return 1;
     }
+    end_time=clock();
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    fprintf(file, "Time needed to reverse a file block after block was: %f s. \n \n", cpu_time_used);
+    fclose(file);
     return 0;
 }

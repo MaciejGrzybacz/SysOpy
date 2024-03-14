@@ -17,14 +17,14 @@ shared_client : client.c
 	# Enter collatz_library directory and make its contents
 	make -C collatz_library
     # Compile shared_client.c and link with shared library collatz.so
-	$(CC) $(CDFLAGS) -L ./collatz_library client.c ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_client -lm
+	$(CC) $(CDFLAGS) client.c  -L ./collatz_library ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_client -lm
 
 # Build dynamic_client executable (for loading dynamic library at runtime)
 dynamic_client : client.c
     # Enter collatz_library directory and make its contents
 	make -C collatz_library
     # Compile dynamic_client.c with USE_DYNAMIC_LIBRARY flag to indicate dynamic library usage, and link with dl library
-	$(CC) $(CFLAGS) -o dynamic_client client.c -ldl -DUSE_DYNAMIC_LIBRARY
+	$(CC) $(CFLAGS) client.c -o dynamic_client -ldl -DUSE_DYNAMIC_LIBRARY
 
 # Run all executables
 test:
