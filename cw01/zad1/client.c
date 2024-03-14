@@ -1,13 +1,25 @@
 //
-// Created by maciejgrzybacz on 06.03.24.
+// Created by maciejgrzybacz on 11.03.24.
 //
+//#ifndef USE_DYNAMIC_LIBRARY
+//#include "collatz_library/collatz.h"
+//#else
+//#include <dlfcn.h>
+//#endif
+
+#ifdef USE_DYNAMIC_LIBRARY
+#include<dlfcn.h>
+#endif
 
 #include <stdio.h>
-#include <dlfcn.h>
-#include <string.h>
-#include <stdlib.h>
+
+#ifndef USE_DYNAMIC_LIBRARY
+int collatz_conjecture(int input);
+int test_collatz_convergence(int input, int max_iter);
+#endif
 
 int main() {
+#ifdef USE_DYNAMIC_LIBRARY
     char path[] = "collatz_library/collatz.so";
     void* handle = dlopen(path,RTLD_LAZY);
     if(!handle) {
@@ -30,13 +42,19 @@ int main() {
         return 1;
     }
 
+#endif
     int max_iter = 10;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5; i++) {
         int collatz_convergence = test_collatz_convergence(i, max_iter);
         if (collatz_convergence >= 0)
             printf("Collatz conjecture converges for %d after %d operations.\n", i, collatz_convergence);
         else
             printf("Collatz conjecture for %d is unreachable after %d operations.\n", i, max_iter);
     }
+
+#ifdef USE_DYNAMIC_LIBRARY
+    dlclose(handle);
+#endif
+
     return 0;
 }

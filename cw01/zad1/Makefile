@@ -1,22 +1,49 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -O0
 LDFLAGS= -Lcollatz_library collatz
 LIB_DIR = collatz_library
 
-all : static_agent shared_agent dl_agent
+all : static_client shared_client dynamic_client
 
-static_agent : static_agent.c
+# Build static_client executable
+static_client : client.c
+	# Enter collatz_library directory and make its contents
 	make -C collatz_library
-	$(CC) static_agent.c -o static_agent -L$(LIB_DIR) -l:collatz.a -lm
+    # Compile client.c and link with static library collatz.a
+	$(CC) client.c -o static_client -L$(LIB_DIR) -l:collatz.a -lm
 
-shared_agent : shared_agent.c
+# Build shared_client executable
+shared_client : client.c
+	# Enter collatz_library directory and make its contents
 	make -C collatz_library
-	$(CC) $(CDFLAGS) -L ./collatz_library shared_agent.c ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_agent -lm
+    # Compile shared_client.c and link with shared library collatz.so
+	$(CC) $(CDFLAGS) client.c  -L ./collatz_library ./collatz_library/collatz.so -Wl,-rpath=./collatz_library -o shared_client -lm
 
-dl_agent : dl_agent.c
+# Build dynamic_client executable (for loading dynamic library at runtime)
+dynamic_client : client.c
+    # Enter collatz_library directory and make its contents
 	make -C collatz_library
-	$(CC) $(CFLAGS) -o dl_agent dl_agent.c -ldl
+    # Compile dynamic_client.c with USE_DYNAMIC_LIBRARY flag to indicate dynamic library usage, and link with dl library
+	$(CC) $(CFLAGS) client.c -o dynamic_client -ldl -DUSE_DYNAMIC_LIBRARY
 
+# Run all executables
+test:
+	./static_client
+	./shared_client
+	./dynamic_client
+
+# Generate object dump of all executables
+objdump:
+	objdump -d static_client > static_client.objdump
+	objdump -d shared_client > shared_client.objdump
+	objdump -d dynamic_client > dynamic_client.objdump
+	cat static_client.objdump
+	cat shared_client.objdump
+	cat dynamic_client.objdump
+
+# Clean up generated files and directories
 clean :
-	rm -f static_agent shared_agent dl_agent *.o
+    # Remove executables and object files
+	rm -f static_client shared_client dynamic_client *.o *.objdump
+    # Clean collatz_library directory
 	make -C collatz_library clean
