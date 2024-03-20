@@ -38,7 +38,7 @@ int show_files_and_sizes(const char *path) {
     return 0;
 }
 
-int main() {
-    show_files_and_sizes("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/zad2");
+int main(int argc, char *argv[]) {
+    show_files_and_sizes(argv[1]);
     return 0;
 }

@@ -10,5 +10,7 @@ clean:
 	make -C zad2 clean
 
 test:
+	echo "zad1"
 	make -C zad1 test
+	echo "zad2"
 	make -C zad2 test
