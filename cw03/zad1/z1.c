@@ -1,12 +1,12 @@
 //
 // Created by maciejgrzybacz on 12.03.24.
 //
-
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
 
+#ifdef BYTE_MODE
 int byte_after_byte(const char *rfile, const char *wfile) {
     FILE* rf = fopen(rfile,"rb");
     FILE* wf = fopen(wfile, "wb");
@@ -34,7 +34,7 @@ int byte_after_byte(const char *rfile, const char *wfile) {
 
     return 0;
 }
-
+#else
 int block_after_block(const char *rfile, const char *wfile) {
     FILE* rf = fopen(rfile, "rb");
     FILE* wf = fopen(wfile, "wb");
@@ -79,6 +79,7 @@ int block_after_block(const char *rfile, const char *wfile) {
 
     return 0;
 }
+#endif
 
 int main(int argc, char* args[]) {
     clock_t start_time, end_time;
