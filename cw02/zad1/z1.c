@@ -8,8 +8,8 @@
 #include <time.h>
 
 int byte_after_byte(const char *rfile, const char *wfile) {
-    FILE* rf = fopen(rfile,"r");
-    FILE* wf = fopen(wfile, "w");
+    FILE* rf = fopen(rfile,"rb");
+    FILE* wf = fopen(wfile, "wb");
 
     if(rf == NULL || wf == NULL) {
         printf("Error while file opening. \n");
@@ -80,13 +80,14 @@ int block_after_block(const char *rfile, const char *wfile) {
     return 0;
 }
 
-int main() {
+int main(int argc, char* args[]) {
     clock_t start_time, end_time;
     double cpu_time_used;
-    start_time = clock();
-    FILE* file = fopen("pomiar_zad_2.txt","w");
+    FILE* file = fopen("pomiar_zad_2.txt","a");
 
-    if(byte_after_byte("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/large_file.txt", "bytefile.txt")==0) {
+#ifdef BYTE_MODE
+    start_time = clock();
+    if(byte_after_byte(args[1], args[2])==0) {
         printf("byte_after_byte: Success\n");
     }
     else {
@@ -95,11 +96,10 @@ int main() {
     }
     end_time=clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-    fprintf(file, "Time needed to reverse a file byte after byte was: %f s.\n", cpu_time_used);
-
-
+    fprintf(file, "Time needed to reverse a %s byte after byte was: %f s.\n", args[1], cpu_time_used);
+#else
     start_time=clock();
-    if(block_after_block("/home/maciejgrzybacz/CLionProjects/SysOpy/cw02/large_file.txt", "blockfile.txt")==0) {
+    if(block_after_block(args[1], args[2])==0) {
         printf("block_after_block: Success\n");
     }
     else {
@@ -108,7 +108,9 @@ int main() {
     }
     end_time=clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-    fprintf(file, "Time needed to reverse a file block after block was: %f s. \n \n", cpu_time_used);
+    fprintf(file, "Time needed to reverse a %s block after block was: %f s. \n",args[1], cpu_time_used);
+#endif
+
     fclose(file);
     return 0;
 }

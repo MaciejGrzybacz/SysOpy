@@ -10,4 +10,4 @@ clean:
 	rm -f main output.txt
 
 test:
-	./main
+	./main ../
