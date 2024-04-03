@@ -1,6 +1,3 @@
-//
-// Created by maciejgrzybacz on 21.03.24.
-//
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,13 +7,12 @@ int global = 0;
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        fprintf(stderr, "Użycie: %s <ścieżka_katalogu>\n", argv[0]);
         return 1;
     }
 
     int local = 0;
 
-    printf("Nazwa programu: %s\n", argv[0]);
+    printf("Program name: %s\n", argv[0]);
 
     pid_t pid = fork();
     if (pid == -1) {
@@ -31,7 +27,10 @@ int main(int argc, char *argv[]) {
         printf("child pid = %d, parent pid = %d\n", getpid(), getppid());
         printf("child's local = %d, child's global = %d\n", local, global);
 
-        exit(1);
+        int exec_return = execl("/bin/ls", "ls", argv[1], NULL);
+        if (exec_return == -1) {
+            exit(1);
+        }
     } else {
         printf("parent process\n");
         printf("parent pid = %d, child pid = %d\n", getpid(), pid);

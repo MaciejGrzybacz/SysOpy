@@ -26,11 +26,18 @@ int main(int argc, char* argv[]) {
         } else if (child_pid == 0) {
             printf("Child process: %d, Parent process: %d\n", getpid(), getppid());
             exit(0);
-        } else {
-            printf("Parent process: %d\n", getpid());
-            int status;
-            wait(&status);
         }
+//        else {
+//            printf("Parent process: %d\n", getpid());
+//            int status;
+//            wait(&status);
+//        }
     }
+
+    for (int i = 0; i < num_processes; i++) {
+        int status;
+        wait(&status);
+    }
+    printf("argv[1]: %s\n", argv[1]);
     return 0;
 }
