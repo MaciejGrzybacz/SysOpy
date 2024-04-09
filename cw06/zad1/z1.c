@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
             double result = calc(a, b, h);
             write(rwf[1], &result, sizeof(double));
             return 0;
+
         } else {
             double a = (double)i / n;
             double b = (double)(i + 1) / n;

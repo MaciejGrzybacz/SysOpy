@@ -18,5 +18,4 @@ int main(int argc, char** argv) {
         signal(SIGUSR1, signal_processor);
         pause();
     }
-    return 0;
 }
