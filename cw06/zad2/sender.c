@@ -1,64 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int main(int argc, char** argv) {
-    if (argc < 4) {
-        printf("Usage: %s <a> <b> <n>\n", argv[0]);
-        return 1;
-    }
+int main() {
+    char receiver_path[] = "./receiver";
+    char input_fifo_path[] = "./input_fifo";
+    char output_fifo_path[] = "./output_fifo";
+    double a, b;
 
-    double a = atof(argv[1]);
-    double b = atof(argv[2]);
-    int n = atoi(argv[3]);
+    printf("Enter a: ");
+    scanf("%lf", &a);
+    printf("Enter b: ");
+    scanf("%lf", &b);
 
-    char * path = "./fifo";
-    int status = mkfifo(path, 0606);
-    if (status == -1) {
-        printf("Error while creating fifo");
-        return 1;
-    }
-
-    int fd = open(path, O_WRONLY);
-    if (fd == -1) {
-        printf("Error while opening fifo in %s", argv[0]);
-        return 2;
-    }
-
-    write(fd, &a, sizeof(double));
-    write(fd, &b, sizeof(double));
-    write(fd, &n, sizeof(int));
-    close(fd);
+    mkfifo(input_fifo_path, 0666);
+    mkfifo(output_fifo_path, 0666);
 
     pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("fork");
-        return 3;
-    } else if (pid == 0) {
-        execl("./receiver", "receiver", NULL);
-        perror("exec");
-        exit(EXIT_FAILURE);
-    } else {
-        int status;
-        wait(&status);
+    if (pid == 0) {
+        execl(receiver_path, receiver_path, NULL);
+        perror("Failed to execute receiver");
+        exit(1);
+    } else if (pid < 0) {
+        perror("Failed to fork");
+        exit(1);
     }
 
-    fd = open(path, O_RDONLY);
-    if (fd == -1) {
-        printf("Error while opening fifo in %s", argv[0]);
-        return 2;
-    }
+    int ifd = open(input_fifo_path, O_WRONLY);
+    int ofd = open(output_fifo_path, O_RDONLY);
+
+    write(ifd, &a, sizeof(double));
+    write(ifd, &b, sizeof(double));
+    close(ifd);
 
     double result;
-    read(fd, &result, sizeof(double));
+    read(ofd, &result, sizeof(double));
+    close(ofd);
+
     printf("Result: %f\n", result);
 
-    close(fd);
-
+    wait(NULL);
     return 0;
 }

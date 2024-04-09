@@ -11,8 +11,8 @@ sender : sender.c
 
 
 clean:
-	rm -f sender receiver fifo *.o
+	rm -f sender receiver *fifo *.o
 
 test:
-	./sender 0.0 1.0 10000
+	./sender
 

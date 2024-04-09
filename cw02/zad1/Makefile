@@ -41,9 +41,9 @@ objdump:
 	cat shared_client.objdump
 	cat dynamic_client.objdump
 
-# Clean up generated files and directories
+# Clean up generated libs and directories
 clean :
-    # Remove executables and object files
+    # Remove executables and object libs
 	rm -f static_client shared_client dynamic_client *.o *.objdump
     # Clean collatz_library directory
 	make -C collatz_library clean

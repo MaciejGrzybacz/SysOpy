@@ -4,13 +4,13 @@ CFLAGS = -Wall -O0
 
 all: main
 
-main: sender.c
+main: z1.c
 	$(CC) $(CFLAGS) -o main z1.c
 
 clean:
 	rm -f main *.o
 
 test:
-	./main 400
+	./main 0.0000000001 10
 
 

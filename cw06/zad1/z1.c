@@ -7,23 +7,22 @@ double f(double x) {
     return 4/(x*x+1);
 }
 
-double calc(double a, double b, int n) {
-    double step = (b - a) / n;
+double calc(double a, double b, double h) {
     double result = 0.0;
-    for(int i = 0; i < n; i++) {
-        result += f(a + i * step);
+    for(int i = 0;  a+i*h< b; i++) {
+        result += f(a + i * h);
     }
-    return result * step;
+    return result * h;
 }
 
 int main(int argc, char** argv) {
-    if(argc < 2) {
+    if(argc < 3) {
         printf("Usage: %s <number_of_processes>\n", argv[0]);
         return 1;
     }
 
-    int n = atoi(argv[1]);
-    int num_intervals=20000;
+    double h=atof(argv[1]);
+    int n = atoi(argv[2]);
     int swf[2];
     int rwf[2];
     pipe(swf);
@@ -38,11 +37,10 @@ int main(int argc, char** argv) {
             close(swf[1]);
             close(rwf[0]);
             double a, b;
-            int num_intervals;
             read(swf[0], &a, sizeof(double));
             read(swf[0], &b, sizeof(double));
-            read(swf[0], &num_intervals, sizeof(int));
-            double result = calc(a, b, num_intervals);
+            read(swf[0], &h, sizeof(double));
+            double result = calc(a, b, h);
             write(rwf[1], &result, sizeof(double));
             return 0;
         } else {
@@ -50,7 +48,7 @@ int main(int argc, char** argv) {
             double b = (double)(i + 1) / n;
             write(swf[1], &a, sizeof(double));
             write(swf[1], &b, sizeof(double));
-            write(swf[1], &num_intervals, sizeof(int));
+            write(swf[1], &h, sizeof(double));
         }
     }
 
