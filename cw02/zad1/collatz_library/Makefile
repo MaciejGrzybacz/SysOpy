@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall
 
-# Default target to build both static and shared libraries
+# Default target to build both static and shared files
 all :
 	make static
 	make shared
@@ -20,7 +20,7 @@ shared: collatz.c
     # Create the shared library collatz.so from collatz.o
 	$(CC) -shared collatz.o -o collatz.so
 
-# Target to clean up generated files
+# Target to clean up generated libs
 clean :
     # Remove the static library, shared library, and object file
 	rm -f collatz.a collatz.so collatz.o
