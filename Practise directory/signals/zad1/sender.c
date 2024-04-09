@@ -3,10 +3,8 @@
 //
 
 #include <signal.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
 int main(int argc, char** argv) {
@@ -14,8 +12,6 @@ int main(int argc, char** argv) {
         printf("Usage: %s <pid> <signal>\n", argv[0]);
         return 1;
     }
-
-
     int pid = atoi(argv[1]);
     int n = atoi(argv[2]);
 
