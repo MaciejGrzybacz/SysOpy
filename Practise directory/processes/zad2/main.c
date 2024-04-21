@@ -33,18 +33,19 @@ int main(int argc, char** argv) {
         while (1) {
             pause();
         }
-    }
-
-    pid2 = fork();
-    if (pid2 == 0) {
-        int num;
-        close(fd[1]);
-        while (1) {
-            if (read(fd[0], &num, sizeof(int)) > 0) {
-                printf("Value of d: %d\n", num);
+    } else {
+        pid2 = fork();
+        if (pid2 == 0) {
+            int num;
+            close(fd[1]);
+            while (1) {
+                if (read(fd[0], &num, sizeof(int)) > 0) {
+                    printf("Value of d: %d\n", num);
+                }
             }
         }
     }
+
     while (1) {
         if (active) {
             kill(pid1, SIGUSR1);

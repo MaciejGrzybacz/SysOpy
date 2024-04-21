@@ -12,7 +12,7 @@ double calc(double a, double b, double h) {
     for(int i = 0;  a+i*h< b; i++) {
         result += f(a + i * h);
     }
-    return result * h;
+    return result*h;
 }
 
 int main(int argc, char** argv) {
@@ -20,6 +20,8 @@ int main(int argc, char** argv) {
         printf("Usage: %s <number_of_processes>\n", argv[0]);
         return 1;
     }
+
+    //initialize two integer values a and b
 
     double h=atof(argv[1]);
     int n = atoi(argv[2]);

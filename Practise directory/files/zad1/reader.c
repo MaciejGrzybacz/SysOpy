@@ -4,6 +4,7 @@
 
 #include "reader.h"
 
+
 int read_file(char* path) {
     FILE* handler=fopen(path,"r");
     if (!handler) {
@@ -49,6 +50,4 @@ int main(int argc, char** argv) {
     }
 
     read_dir(argv[1]);
-    return 0;
-
 }

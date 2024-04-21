@@ -1,4 +1,4 @@
-
+CC = gc
 all: reader
 
 reader : reader.c

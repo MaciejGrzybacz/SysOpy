@@ -9,9 +9,9 @@ int main (int l_param, char * wparam[]){
 
     void *handle = dlopen("bibl.so", RTLD_LAZY);
 
-    int (f1) (int, int) = dlsym(handle, "sumuj");
+    int (*f1) (int, int) = dlsym(handle, "sumuj");
     double (*f2) (int, int) = dlsym(handle, "dziel");
-    for (i=0; i<3; i++) printf("Wynik: %d, %lf\n", f1(tab+i, 20-i), f2(tab[i], tab[i+1]));
+    for (i=0; i<3; i++) printf("Wynik: %d, %lf\n", f1(tab[i], 20-i), f2(tab[i], tab[i+1]));
     dlclose(handle);
     return 0;
 }

@@ -1,4 +1,4 @@
-CC = gcc
+mCC = gcc
 CFLAGS = -Wall -O0
 
 all: main

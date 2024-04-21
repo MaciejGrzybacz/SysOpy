@@ -29,7 +29,7 @@ int main() {
     read(ifd, &b, sizeof(double));
     close(ifd);
 
-    double result = calc(a, b, 100000000);
+    double result = calc(a, b, 1000000);
     printf("Calculated result, returning to sender...\n");
     write(ofd, &result, sizeof(double));
     close(ofd);

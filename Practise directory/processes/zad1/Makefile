@@ -15,3 +15,4 @@ dynamic.o:
 
 clean:
 	rm -rf dynamic dynamic.o bibl.o bibl.so
+
