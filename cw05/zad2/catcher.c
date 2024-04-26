@@ -9,7 +9,7 @@
 int status = -1;
 int status_changes = 0;
 
-void argument_handler(int argument){
+void handler(int argument){
     status_changes++;
     status = argument;
 }
@@ -17,7 +17,7 @@ void argument_handler(int argument){
 void SIGUSR1_action(int signo, siginfo_t *info, void *extra){
     int int_val = info->si_int;
     printf("Received status: %d from pid: %d\n", int_val, info->si_pid);
-    argument_handler(int_val);
+    handler(int_val);
     kill(info->si_pid, SIGUSR1);
 }
 
