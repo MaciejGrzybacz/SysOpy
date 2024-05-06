@@ -15,7 +15,8 @@
 typedef enum {
     INIT,
     IDENTIFIER,
-    MESSAGE_TEXT
+    MESSAGE_TEXT,
+    KILL
 } message_type_t;
 
 typedef struct {
@@ -86,6 +87,9 @@ void handle_messages(mqd_t mq_client_descriptor, int* pipe_write_end) {
                     printf("Received identifier from server: %d\n", receive_message.identifier);
                     write(*pipe_write_end, &receive_message.identifier, sizeof(receive_message.identifier));
                     break;
+                case KILL:
+                    printf("Too many clients, cannot register!");
+                    exit(1);
                 default:
                     printf("Unknown message type in client queue: %d", receive_message.type);
                     break;
