@@ -78,12 +78,11 @@ int main()
     {
         draw_grid(foreground);
 
-        // Wake up threads with declared signals
         for(int i = 0; i < THREAD_COUNT; i++) {
             pthread_kill(threads[i], SIGUSR1);
         }
 
-        usleep(500 * 1000);
+        usleep(500000);
 
         tmp = foreground;
         foreground = background;
