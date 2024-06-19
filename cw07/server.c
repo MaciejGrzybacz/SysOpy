@@ -5,12 +5,13 @@
 
 #define MESSAGE_BUFFER_SIZE 2048
 #define SERVER_QUEUE_NAME "/simple_server_client"
-#define MAX_CLIENTS_COUNT 100
+#define MAX_CLIENTS_COUNT 2
 
 typedef enum {
     INIT,
     IDENTIFIER,
-    MESSAGE_TEXT
+    MESSAGE_TEXT,
+    KILL
 } MessageType;
 
 typedef struct {
@@ -75,16 +76,21 @@ mqd_t openClientQueue(const char *queueName) {
 }
 
 void handleInitMessage(mqd_t serverQueue, Message *message, mqd_t *clientQueues, int *registeredClients) {
+    Message sendMessage = {
+            .type = IDENTIFIER,
+            .identifier = *registeredClients
+    };
+    if (*registeredClients>=MAX_CLIENTS_COUNT) {
+        printf("Too many clients!\n");
+        sendMessage.type=KILL;
+        mq_send(clientQueues[*registeredClients], (char*)&sendMessage, sizeof(sendMessage), 10);
+        return;
+    }
     clientQueues[*registeredClients] = openClientQueue(message->text);
     if(clientQueues[*registeredClients] < 0) {
         perror("mq_open client");
         return;
     }
-
-    Message sendMessage = {
-            .type = IDENTIFIER,
-            .identifier = *registeredClients
-    };
 
     mq_send(clientQueues[*registeredClients], (char*)&sendMessage, sizeof(sendMessage), 10);
     (*registeredClients)++;
