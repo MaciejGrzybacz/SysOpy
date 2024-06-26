@@ -12,6 +12,7 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <semaphore.h>
+#include <time.h>
 
 #define SHARED_MEMORY_DESCRIPTOR_NAME "printer_system_shared_memory"
 #define MAX_PRINTERS 256
@@ -42,6 +43,7 @@ void SIGNAL_handler(int signum) {
 }
 
 void generate_random_string(char* buffer, int length) {
+    srand(time(NULL));
     for(int i = 0; i < length; i++) {
         buffer[i] = 'a' + rand() % 26;
     }
@@ -107,9 +109,8 @@ int main(int argc, char** argv) {
                 memory_map->printers[printer_index].printer_state = PRINTING;
 
                 printf("User %d is printing on printer %d\n", i, printer_index);
-                fflush(stdout);
 
-                sleep(rand() % 3 + 1);
+                sleep(rand() % 2 + 1);
             }
             exit(0);
         }
